@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1680"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif">
+  <title>RAG Chatbot Architecture</title>
+  <desc>User query flows through OpenAI embedder, Pinecone vector search with Redis caching, Cohere reranking, and GPT-4 with product docs context, streamed back to user.</desc>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0a0a0a"/>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#71717a"/>
+    </marker>
+  </defs>
+
+  <!-- User Query (neutral) -->
+  <g transform="translate(590,80)">
+    <rect width="260" height="52" rx="12" ry="12" fill="#3f3f46" stroke="#52525b" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">User Query</text>
+  </g>
+
+  <!-- Query Embedder (compute) -->
+  <g transform="translate(590,200)">
+    <rect width="260" height="72" rx="12" ry="12" fill="#1e3a5f" stroke="#2a5082" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Query Embedder</text>
+    <text x="130" y="54" fill="#93c5fd" font-size="13" text-anchor="middle">OpenAI text-embedding-3-small</text>
+  </g>
+
+  <!-- Edge: User Query → Embedder -->
+  <line x1="720" y1="132" x2="720" y2="198" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- Redis Cache (storage, side-channel) -->
+  <g transform="translate(200,200)">
+    <rect width="240" height="72" rx="12" ry="12" fill="#5c2e1f" stroke="#7a3d2a" stroke-width="1"/>
+    <text x="120" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Redis</text>
+    <text x="120" y="54" fill="#fca5a5" font-size="13" text-anchor="middle">Query embedding cache</text>
+  </g>
+
+  <!-- Dashed edges: Embedder ↔ Redis -->
+  <line x1="588" y1="236" x2="440" y2="236" stroke="#71717a" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <line x1="440" y1="220" x2="588" y2="220" stroke="#71717a" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+
+  <!-- Pinecone Vector Search (retrieval) -->
+  <g transform="translate(590,340)">
+    <rect width="260" height="72" rx="12" ry="12" fill="#14532d" stroke="#1f6b3f" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Pinecone</text>
+    <text x="130" y="54" fill="#86efac" font-size="13" text-anchor="middle">Vector search</text>
+  </g>
+
+  <!-- Edge: Embedder → Pinecone -->
+  <line x1="720" y1="272" x2="720" y2="338" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- Top-5 Results (neutral) -->
+  <g transform="translate(590,460)">
+    <rect width="260" height="52" rx="12" ry="12" fill="#3f3f46" stroke="#52525b" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Top-5 Results</text>
+  </g>
+
+  <!-- Edge: Pinecone → Top-5 -->
+  <line x1="720" y1="412" x2="720" y2="458" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- Cohere Reranker (rank) -->
+  <g transform="translate(590,580)">
+    <rect width="260" height="72" rx="12" ry="12" fill="#3b1f6b" stroke="#553090" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Cohere Reranker</text>
+    <text x="130" y="54" fill="#c4b5fd" font-size="13" text-anchor="middle">Semantic reranking</text>
+  </g>
+
+  <!-- Edge: Top-5 → Reranker -->
+  <line x1="720" y1="512" x2="720" y2="578" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- Reranked Results (neutral) -->
+  <g transform="translate(590,700)">
+    <rect width="260" height="52" rx="12" ry="12" fill="#3f3f46" stroke="#52525b" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Reranked Results</text>
+  </g>
+
+  <!-- Edge: Reranker → Reranked -->
+  <line x1="720" y1="652" x2="720" y2="698" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- System Prompt + Context (neutral) -->
+  <g transform="translate(590,820)">
+    <rect width="260" height="72" rx="12" ry="12" fill="#3f3f46" stroke="#52525b" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">System Prompt</text>
+    <text x="130" y="54" fill="#d4d4d8" font-size="13" text-anchor="middle">+ product docs context</text>
+  </g>
+
+  <!-- Edge: Reranked → System Prompt -->
+  <line x1="720" y1="752" x2="720" y2="818" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- GPT-4 (compute) -->
+  <g transform="translate(590,960)">
+    <rect width="260" height="72" rx="12" ry="12" fill="#1e3a5f" stroke="#2a5082" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">GPT-4</text>
+    <text x="130" y="54" fill="#93c5fd" font-size="13" text-anchor="middle">Streaming response</text>
+  </g>
+
+  <!-- Edge: System Prompt → GPT-4 -->
+  <line x1="720" y1="892" x2="720" y2="958" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <!-- Streamed Response (neutral) -->
+  <g transform="translate(590,1100)">
+    <rect width="260" height="52" rx="12" ry="12" fill="#3f3f46" stroke="#52525b" stroke-width="1"/>
+    <text x="130" y="32" fill="#f4f4f5" font-size="18" font-weight="600" text-anchor="middle">Streamed Response</text>
+  </g>
+
+  <!-- Edge: GPT-4 → Response -->
+  <line x1="720" y1="1032" x2="720" y2="1098" stroke="#71717a" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+</svg>

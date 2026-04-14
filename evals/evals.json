@@ -1,0 +1,23 @@
+{
+  "skill_name": "svg-architecture-diagram",
+  "evals": [
+    {
+      "id": 0,
+      "name": "checkout-flow",
+      "prompt": "Draw a diagram of our checkout flow: the web frontend calls an API gateway, which calls the order service. The order service writes to Postgres, publishes an event to Kafka, and returns a confirmation. A background worker consumes Kafka events and sends a receipt email via SendGrid. Save as an .svg file.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "rag-chatbot",
+      "prompt": "Make an architecture diagram for a RAG chatbot over our product docs. User query goes to an embedder (OpenAI text-embedding-3-small), then a Pinecone vector search, top-5 results are reranked with Cohere, then stuffed into GPT-4 with a system prompt and streamed back to the user. We cache query embeddings in Redis. Save as an .svg file.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "login-sequence",
+      "prompt": "Sequence diagram for mobile login. The App sends POST /login to the Auth API. The Auth API queries Postgres for the user, checks bcrypt hash, writes a session to Redis, and returns a JWT to the App. Then the App calls the Profile API with the JWT; the Profile API validates the session via Redis and returns profile data. Save as an .svg file.",
+      "files": []
+    }
+  ]
+}
